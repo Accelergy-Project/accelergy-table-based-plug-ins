@@ -42,8 +42,3 @@ There are several rules for creating these data files:
 - The necessary hardware attribute names, action names, argument names are the headers(the first row) of the csv, and their corresponding values are filled in the cells.
 - The energy column must have a header called "energy".
  
- 
-<<<<<<< HEAD
-=======
- 
->>>>>>> 509ada26092adfff3e6bd5f4afa6e1b9b232cc5c
