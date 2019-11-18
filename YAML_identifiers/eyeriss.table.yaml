@@ -1,0 +1,4 @@
+name: eyeriss_tables
+technology: 65
+accuracy: 95
+path_to_data_dir: /u/eems/workspace8/nellie/research/accelergy_project/eyeriss_data # this is my own path

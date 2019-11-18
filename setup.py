@@ -10,7 +10,7 @@ def generate_data_files():
     """ generate all the data files that need to be included in the share folder """
     # include all table identifiers
     all_identifier_files = {}
-    sets_of_tables_path = os.getcwd() + os.sep + 'sets_of_tables'
+    sets_of_tables_path = os.getcwd() + os.sep + 'YAML_identifiers'
     for root, directories, file_names in os.walk(sets_of_tables_path):
         for file_name in file_names:
             relative_root = os.path.relpath(root, os.getcwd())

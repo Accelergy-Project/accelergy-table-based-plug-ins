@@ -26,7 +26,6 @@ class SetsOfTables(object):
         self.estimator_name = 'sets_of_tables'
         self.sets_of_tables = self.summarize_sets_of_tables()
         self.energy_holder = [] # holds the results retrieved by primitive_action_supported
-        print('-------', self.sets_of_tables)
     # ------- Interface functions with Accelergy --------#
     # (1) primitive_action_supported(interface)
     # (2) estimate_energy(interface)
@@ -107,7 +106,7 @@ class SetsOfTables(object):
         """ Collect the information stored in identifier YAML files for all sets of tables"""
         sets_of_tables_info = {}
         file_dir = os.path.dirname(__file__)
-        for root, directories, filenames in os.walk(os.path.join(file_dir, 'sets_of_tables')):
+        for root, directories, filenames in os.walk(os.path.join(file_dir, 'YAML_identifiers')):
             for filename in filenames:
                 if 'table.yaml' in filename:  # locate a set of tables
                     identifier_path = root + os.sep + filename
