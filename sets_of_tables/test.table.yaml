@@ -1,0 +1,4 @@
+name: test_tables
+technology: 45
+accuracy: 70
+path_to_data_dir: /u/eems/workspace8/nellie/research/accelergy_project/test_data
