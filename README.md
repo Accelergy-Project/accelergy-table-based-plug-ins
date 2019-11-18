@@ -1,6 +1,6 @@
 # accelergy-table-based-plug-in
 
-An energy estimation plug-in template for [Accelergy framework](https://github.com/nelliewu95/accelergy)
+An energy estimation plug-in template for [Accelergy framework](https://github.com/nelliewu95/accelergy)  
 This template is designed to provide a starting point for table-based estimation plug-ins.
 
 
