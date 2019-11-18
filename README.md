@@ -23,7 +23,7 @@ A YAML identifier file for your set of tables should be placed in  ```YAML_ident
 The name of the YAML file must end with ```table.yaml``` and following information needs to be provided in the file:
  - The name of the set of tables
  - The supported technology 
- - The accuracy of the your set of tables
+ - The accuracy of your set of tables
  - The path to the directory that contains all your csv data files
 
 You should install the plug-in (with the same option as the Accelergy installation) every time you add more identifier file(s) by ```pip install .```
@@ -34,12 +34,12 @@ You can create your csv tables anywhere in you file structure as long as the pat
 
 #### Examples
 ```example_csv_tables``` folder provides the necessary headers for all default primitive component classes.  
-```counter.csv``` and ```regFile.csv``` are populated with random data to show what should be filled in the cells.
+```counter.csv``` and ```regfile.csv``` are populated with random data to show what should be filled in the cells.
 #### Rules
 There are several rules for creating these data files:
-- Must be in csv format
-- The name of the file should be ```<primitive component class name>.csv```, e.g., SRAM.csv for SRAM energy data
-- The necessary hardware attribute names, action names, argument names are the headers of the csv, and their values are filled in the cell
-- The energy column must have a header called "energy"
+- Data tables must be in csv format.
+- The name of the file should be ```<primitive component class name>.csv```, e.g., SRAM.csv for SRAM energy data.
+- The necessary hardware attribute names, action names, argument names are the headers(the first row) of the csv, and their corresponding values are filled in the cells.
+- The energy column must have a header called "energy".
  
  
