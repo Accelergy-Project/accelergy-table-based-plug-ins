@@ -23,9 +23,10 @@
 import os, yaml, sys, csv
 class SetsOfTables(object):
     def __init__(self):
-        self.estimator_name = 'sets_of_tables'
+        self.estimator_name = 'table-based-plug-ins'
         self.sets_of_tables = self.summarize_sets_of_tables()
         self.energy_holder = [] # holds the results retrieved by primitive_action_supported
+        print(self.sets_of_tables)
     # ------- Interface functions with Accelergy --------#
     # (1) primitive_action_supported(interface)
     # (2) estimate_energy(interface)
@@ -106,36 +107,49 @@ class SetsOfTables(object):
         """ Collect the information stored in identifier YAML files for all sets of tables"""
         sets_of_tables_info = {}
         file_dir = os.path.dirname(__file__)
-        for root, directories, filenames in os.walk(os.path.join(file_dir, 'YAML_identifiers')):
-            for filename in filenames:
-                if 'table.yaml' in filename:  # locate a set of tables
-                    identifier_path = root + os.sep + filename
-                    identifier = yaml.load(open(identifier_path), Loader=yaml.SafeLoader)
-                    set_name = identifier['name']
+        accelergy_config_file = os.path.join(os.path.expanduser('~'),'.config/accelergy/accelergy_config.yaml')
+        config_file_content = yaml.load(open(accelergy_config_file), Loader=yaml.SafeLoader)
+        if 'table_plug_ins' not in config_file_content:
+            print(self.estimator_name, ': ERROR -- cannot find the listed roots for the sets of tables')
+            print('Please initialize by running: accelergyTables')
+            print('A pointer to the default set of tables will be created in ~/.config/accelergy/accelergy_config.yaml')
+            sys.exit(0)
+        table_roots = config_file_content['table_plug_ins']['roots']
 
-                    # Check the required keys
-                    if 'accuracy' not in identifier or 'technology' not in identifier \
-                            or 'name' not in identifier or 'path_to_data_dir' not in identifier:
-                        print('ERROR-- ', os.path.join(root, identifier_path),
-                              'Identifier YAML file for each set of tables must contain the following keys: \n'
-                              '"name", "technology", "accuracy", "path_to_data_dir"')
-                        sys.exit(0)
+        for table_root in table_roots:
+            for root, directories, filenames in os.walk(table_root):
+                for filename in filenames:
+                    if 'table.yaml' in filename:  # locate a set of tables
+                        identifier_path = root + os.sep + filename
+                        identifier = yaml.load(open(identifier_path), Loader=yaml.SafeLoader)
+                        set_name = identifier['name']
 
+                        # Check the required keys
+                        if 'accuracy' not in identifier or 'technology' not in identifier \
+                                or 'name' not in identifier or 'path_to_data_dir' not in identifier:
+                            print('ERROR-- ', identifier_path,
+                                  'Identifier YAML file for each set of tables must contain the following keys: \n'
+                                  '"name", "technology", "accuracy", "path_to_data_dir"')
+                            sys.exit(0)
 
-                    if not os.path.isabs(identifier['path_to_data_dir']):
-                        # must provide absolute path the directory that stores the csv tables
-                        print(self.estimator_name, ': ERROR in ', set_name, 'identifier YAML',
-                                                   ' -- not absolute path to the data folder')
-                        sys.exit(0)
+                        if not os.path.isabs(identifier['path_to_data_dir']):
+                            abs_path = os.path.abspath(os.path.join(os.path.join(root), identifier['path_to_data_dir']))
+                            if not os.path.exists(abs_path):
+                                print('ERROR-- ', identifier_path,
+                                      'The sepcified data directory cannot be located...')
+                                print('Intepreted absolute path to the specified data directory: ', abs_path)
+                                sys.exit(0)
+                            identifier['path_to_data_dir'] = abs_path
 
-                    supported_primitive_classes = []
-                    for data_root, data_directories, data_filenames in os.walk(identifier['path_to_data_dir']):
-                        for data_filename in data_filenames:
-                            if '.csv' in data_filename:
-                                supported_primitive_classes.append(data_filename[0:-4])
-                    identifier['supported_primitive_classes'] = supported_primitive_classes
-                    set_name in sets_of_tables_info and print(self.estimator_name, ':',
-                        ' WARN -- Repeated table set name:', set_name)
-                    sets_of_tables_info[set_name] = identifier
+                        supported_primitive_classes = []
+                        for data_root, data_directories, data_filenames in os.walk(identifier['path_to_data_dir']):
+                            for data_filename in data_filenames:
+                                if '.csv' in data_filename:
+                                    supported_primitive_classes.append(data_filename[0:-4])
+                        identifier['supported_primitive_classes'] = supported_primitive_classes
+                        set_name in sets_of_tables_info and print(self.estimator_name, ':',
+                            ' WARN -- Repeated table set name:', set_name)
+                        sets_of_tables_info[set_name] = identifier
+                        print(self.estimator_name, 'Identifies a set of tables named: ',set_name )
 
         return sets_of_tables_info

@@ -1,41 +1,55 @@
-# accelergy-table-based-plug-in
+# accelergy-table-based-plug-ins
 
-An energy estimation plug-in template for [Accelergy framework](https://github.com/nelliewu96/accelergy)    
-This template is designed to provide a starting point for table-based estimation plug-ins.
+An energy estimation plug-in for [Accelergy framework](https://github.com/nelliewu96/accelergy). This plug-in provides an entry point for easy creation of various energy tables.
 
 
 ## Get started 
-- Install [Accelergy framework](https://github.com/nelliewu95/accelergy)
+- Install [Accelergy framework](https://github.com/nelliewu95/accelergy) (if you have not yet).
+- Run ```pip install .``` with the same options you used for installing Accelergy.   
+- The installation installs a command ```accelergyTables``` to your system.
 
-## Overview of the Plug-in
-This plug-in serves as the entry point for all user-defined sets of tables of different hardware attributes,
-action types, technologies, etc. 
+
+## Try the provided example set of tables
+#### Add root
+Add the root to the provided set of tables by running ```accelergyTables```. 
+
+#### Run accelergy
+
+You should see the following in the printed log：
+  - The ```table-based-plug-ins``` is found by accelergy.
+  - The ```table-based-plug-ins``` identifies a set of tables called ```test_tables```.
+  
+Note that most of the provided energy tables do not contain numerical data. 
 
 ## Create your own set of tables
 
+### Add the root to your sets of tables 
+Add the root to your sets of tables to the Accelergy config file by running
+```
+accelergyTables -r $myRoot
+```
+
+You can also manually add the root in the ```~/.config/accelergy/accelergy_config.yaml``` file.
+
+The plug-in will recursively search the subdirectories of the provided root to locate various sets of tables
+
 ### YAML identifier file
-A YAML identifier file for your set of tables should be placed in  ```YAML_identifiers```.
+A YAML identifier file that describes the basic information of your set of tables needs to be created.  
+```example_set_of_tables``` contains an example YAML identifier file ```test.table.yaml```.
 
-#### Examples
-```YAML_identifiers``` contains two example YAML identifier files.
-
-#### Rules
 The name of the YAML file must end with ```table.yaml``` and following information needs to be provided in the file:
  - The name of the set of tables
  - The supported technology 
  - The accuracy of your set of tables
  - The path to the directory that contains all your csv data files
 
-You should install the plug-in (with the same option as the Accelergy installation) every time you add more identifier file(s) by ```pip install .```
-
 
 ### CSV data tables 
-You can create your csv tables anywhere in you file structure as long as the path pointer in the identifier file is correct.
+You can create your csv tables anywhere in you file structure as long as the path pointer in its identifier file is correct.
 
-#### Examples
-```example_csv_tables``` folder provides the necessary headers for all default primitive component classes.  
+```example_set_of_tables/data``` folder provides the necessary headers for all default primitive component classes.  
 ```counter.csv``` and ```regfile.csv``` are populated with random data to show what should be filled in the cells.
-#### Rules
+
 There are several rules for creating these data files:
 - Data tables must be in csv format.
 - The name of the file should be ```<primitive component class name>.csv```, e.g., SRAM.csv for SRAM energy data.
