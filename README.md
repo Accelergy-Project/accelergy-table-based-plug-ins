@@ -9,7 +9,12 @@ An energy estimation plug-in for [Accelergy framework](https://github.com/nellie
 - The installation installs a command ```accelergyTables``` to your system.
 
 
-## Try the provided example set of tables
+## Try the provided example set of table templates
+#### Populate the provided table templates (can skip if don't want to add more data to templates)
+At least one row of example filled cells are provided in the templates.
+Populate the cells with your own data.
+Run ```pip install .``` to reinstall the updated data files
+
 #### Add root
 Add the root to the provided set of tables by running ```accelergyTables```. 
 
@@ -35,7 +40,7 @@ The plug-in will recursively search the subdirectories of the provided root to l
 
 ### YAML identifier file
 A YAML identifier file that describes the basic information of your set of tables needs to be created.  
-```example_set_of_tables``` contains an example YAML identifier file ```test.table.yaml```.
+```set_of_table_templates``` contains an example YAML identifier file ```test.table.yaml```.
 
 The name of the YAML file must end with ```table.yaml``` and following information needs to be provided in the file:
  - The name of the set of tables
@@ -47,7 +52,7 @@ The name of the YAML file must end with ```table.yaml``` and following informati
 ### CSV data tables 
 You can create your csv tables anywhere in you file structure as long as the path pointer in its identifier file is correct.
 
-```example_set_of_tables/data``` folder provides the necessary headers for all default primitive component classes.  
+```set_of_table_templates/data``` folder provides the necessary headers for all default primitive component classes.  
 ```counter.csv``` and ```regfile.csv``` are populated with random data to show what should be filled in the cells.
 
 There are several rules for creating these data files:

@@ -1,0 +1,11 @@
+technology,latency,width,action,energy
+45nm,5ns,4,count,0.2
+45nm,5ns,8,count,0.4
+45nm,5ns,16,count,0.8
+45nm,5ns,32,count,0.16
+45nm,5ns,64,count,0.32
+45nm,5ns,4,idle,0
+45nm,5ns,8,idle,0
+45nm,5ns,16,idle,0
+45nm,5ns,32,idle,0
+45nm,5ns,64,idle,0

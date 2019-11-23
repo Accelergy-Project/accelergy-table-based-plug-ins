@@ -20,7 +20,7 @@ def main():
         curr_file_path = os.path.abspath(__file__)
         accelergy_share_folder_path = os.path.abspath(curr_file_path + '../../../../../../share/accelergy/')
         table_estimator_path = os.path.abspath(accelergy_share_folder_path +
-                                               '/estimation_plug_ins/accelergy-table-based-plug-ins/example_set_of_tables')
+                                               '/estimation_plug_ins/accelergy-table-based-plug-ins/set_of_table_templates')
         config_content['table_plug_ins'] = {'roots': [table_estimator_path]}
 
     if new_root is not None:

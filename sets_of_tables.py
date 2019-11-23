@@ -26,7 +26,6 @@ class SetsOfTables(object):
         self.estimator_name = 'table-based-plug-ins'
         self.sets_of_tables = self.summarize_sets_of_tables()
         self.energy_holder = [] # holds the results retrieved by primitive_action_supported
-        print(self.sets_of_tables)
     # ------- Interface functions with Accelergy --------#
     # (1) primitive_action_supported(interface)
     # (2) estimate_energy(interface)
