@@ -25,10 +25,13 @@ class SetsOfTables(object):
     def __init__(self):
         self.estimator_name = 'table-based-plug-ins'
         self.sets_of_tables = self.summarize_sets_of_tables()
-        self.energy_holder = [] # holds the results retrieved by primitive_action_supported
-    # ------- Interface functions with Accelergy --------#
-    # (1) primitive_action_supported(interface)
-    # (2) estimate_energy(interface)
+        self.holder = [] # holds the results retrieved by primitive_action_supported/primitive_area_supported
+    
+    # 
+    # ERT interface functions 
+    #
+        # (1) primitive_action_supported(interface)
+        # (2) estimate_energy(interface)
 
     def primitive_action_supported(self, interface):
         technology = interface['attributes']['technology'] \
@@ -40,41 +43,72 @@ class SetsOfTables(object):
         max_accuracy, estimated_energy = self.select_best_set(interface)
         # record the retrieved result to avoid potential repetitive search
         if max_accuracy:
-            self.energy_holder = [] # reset energy holder
-            self.energy_holder.append(interface)
-            self.energy_holder.append(estimated_energy)
+            self.holder = [] # reset energy holder
+            self.holder.append(interface)
+            self.holder.append(estimated_energy)
         return max_accuracy
 
     def estimate_energy(self, interface):
-        if len(self.energy_holder) == 0 or not self.energy_holder[0] == interface:
+        if len(self.holder) == 0 or not self.holder[0] == interface:
             print(self.estimator_name, ': ERROR -- There is no energy held in energy holder or held energy incorrect')
             print('Received Request: ', interface)
-            print('Energy Holder Data: ', self.energy_holder)
+            print('Energy Holder Data: ', self.holder)
             sys.exit(0)
         else:
-            return self.energy_holder[1]
+            return self.holder[1]
+
+    # 
+    # ART interface functions 
+    #
+        # (1) primitive_area_supported(interface)
+        # (2) estimate_area(interface)
+
+    def primitive_area_supported(self, interface):
+        technology = interface['attributes']['technology'] \
+                     if 'technology' in interface['attributes'] else None
+        if technology is None:
+            print(self.estimator_name, ': ',
+                  '"technology" attribute needs to be provided to locate the correct set of tables')
+            return 0
+        max_accuracy, estimated_area = self.select_best_set(interface)
+        # record the retrieved result to avoid potential repetitive search
+        if max_accuracy:
+            self.holder = [] # reset energy holder
+            self.holder.append(interface)
+            self.holder.append(estimated_area)
+        return max_accuracy
+
+    def estimate_area(self, interface):
+        if len(self.holder) == 0 or not self.holder[0] == interface:
+            print(self.estimator_name, ': ERROR -- There is no energy held in energy holder or held energy incorrect')
+            print('Received Request: ', interface)
+            print('Energy Holder Data: ', self.holder)
+            sys.exit(0)
+        else:
+            return self.holder[1]
 
     # -------- Utility functions -------#
     def select_best_set(self, interface):
         """ Select the best set of tables according to the recorded identifiers """
         max_accuracy = 0
-        estimated_energy = None
+        estimated_result = None
         primitive_class_name = interface['class_name']
         for set_name, set_identifier in self.sets_of_tables.items():
             if str(interface['attributes']['technology']) == str(set_identifier['technology']) and \
                set_identifier['accuracy'] > max_accuracy and \
                primitive_class_name in set_identifier['supported_primitive_classes']:
-                # check if there are matching attributes and actions
-                supported, estimated_energy = self.walk_csv(interface, set_identifier['path_to_data_dir'])
+                # check if there are matching attributes( and actions)
+                area_query = False if 'action_name' in interface else True
+                supported, estimated_result = self.walk_csv(interface, set_identifier['path_to_data_dir'], area_query)
                 if supported:
                     max_accuracy = set_identifier['accuracy']
-        return max_accuracy, estimated_energy
+        return max_accuracy, estimated_result
 
 
-    def walk_csv(self, interface, data_dir_path):
-        """ Check if there is corresponding entry for the requested attributes and actions """
+    def walk_csv(self, interface, data_dir_path, area_query = False):
+        """ Check if there is corresponding entry for the requested attributes (and actions) """
         supported = False
-        energy = None
+        result = None
         csv_file_path = os.path.join(data_dir_path, interface['class_name'] + '.csv')
         with open(csv_file_path) as csv_file:
             reader = csv.DictReader(csv_file)
@@ -84,11 +118,15 @@ class SetsOfTables(object):
                 attr_matched = True
                 # check if hardware attributes are present in the csv file
                 for attr_name, attr_val in interface['attributes'].items():
-                    if not attr_name in row or not row[attr_name] == str(attr_val):
+                    if attr_name in row and not row[attr_name] == str(attr_val):
+                        # only check if the attributes in the provided csv match the interface,
+                        # ignore the ones that are in the interface but not in csv
+                        # (the users do not care the ones that are not specified in the csv)
                         attr_matched = False
                         break # attributes not matched, next row
                 # check if action name (and arguments) are present in the csv file (given attributes are there)
-                if attr_matched:
+                if attr_matched and not area_query:
+                    # action query requires action and action argument check
                     if row['action'] == interface['action_name']: # if action name match
                         arg_matched = True
                         if interface['arguments'] is not None:
@@ -98,8 +136,14 @@ class SetsOfTables(object):
                                     break  # arg not matched, next row
                         if arg_matched:
                             supported = True
-                            energy = float(row['energy'])
-        return supported, energy
+                            result = float(row['energy'])
+
+                if attr_matched and area_query:
+                    # area query does not require action and action argument check
+                    supported = True
+                    result = float(row['area'])
+
+        return supported, result
 
 
     def summarize_sets_of_tables(self):

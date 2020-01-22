@@ -40,7 +40,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)',
       ],
-      keywords='accelerator hardware energy estimation aladdin',
+      keywords='accelerator hardware energy estimation',
       author='Yannan Wu',
       author_email='nelliewu@mit.edu',
       license='MIT',
