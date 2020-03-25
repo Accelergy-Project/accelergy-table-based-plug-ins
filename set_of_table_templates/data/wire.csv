@@ -1,2 +1,2 @@
-technology,latency,length,action,energy
-45nm,5ns,3,transfer_random,0.2
+technology,latency,length,action,energy,area
+45nm,5ns,3,transfer_random,0.2,0

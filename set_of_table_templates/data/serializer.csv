@@ -1,2 +1,2 @@
-technology,latency,datawidth,ratio,action,energy
-45nm,5ns,16,4,serialize,1.4
+technology,latency,datawidth,ratio,action,energy,area
+45nm,5ns,16,4,serialize,1.4,0

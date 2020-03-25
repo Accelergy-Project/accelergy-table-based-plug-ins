@@ -1,2 +1,2 @@
-technology,latency,datawidth,action,energy
-45,5,16,process,0.02
+technology,latency,datawidth,action,energy,area
+45,5,16,process,0.02,0

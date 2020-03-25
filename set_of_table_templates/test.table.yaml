@@ -1,4 +1,4 @@
 name: test_tables
 technology: 45nm
-accuracy: 70
+accuracy: 0  # example steup, so no accuracy
 path_to_data_dir: ./data # this is my own path

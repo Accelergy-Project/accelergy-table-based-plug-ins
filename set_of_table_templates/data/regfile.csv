@@ -1,5 +1,5 @@
-technology,latency,width,depth,action,data_delta,address_delta,energy
-45nm,5ns,8,128,read,0,0,0.03
-45nm,5ns,8,128,read,0,1,0.05
-45nm,5ns,8,128,read,1,0,0.1
-45nm,5ns,8,128,read,1,1,0.12
+technology,latency,width,depth,action,data_delta,address_delta,energy,area
+45nm,5ns,8,128,read,0,0,0.03,0
+45nm,5ns,8,128,read,0,1,0.05,0
+45nm,5ns,8,128,read,1,0,0.1,0
+45nm,5ns,8,128,read,1,1,0.12,0
