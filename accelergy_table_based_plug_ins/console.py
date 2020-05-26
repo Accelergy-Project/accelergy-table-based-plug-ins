@@ -24,7 +24,19 @@ def main():
         config_content['table_plug_ins'] = {'roots': [table_estimator_path]}
 
     if new_root is not None:
-        config_content['table_plug_ins']['roots'].append(new_root)
+        if os.path.isabs(new_root):
+            if new_root not in config_content['table_plug_ins']['roots']:
+                config_content['table_plug_ins']['roots'].append(new_root)
+                print(new_root, "is added as a new root for table based plug-in.")
+            else:
+                print(new_root, "is already added as a root for table based plug-in")
+        else:
+            root_to_add = os.path.join(os.getcwd(), new_root)
+            if root_to_add not in config_content['table_plug_ins']['roots']:
+                config_content['table_plug_ins']['roots'].append(root_to_add)
+                print(root_to_add, "is added as a new root for table based plug-in.")
+            else:
+                print(root_to_add, "is already added as a root for table based plug-in")
 
     config_file = open(accelergy_config_file_path, 'w')
     config_file.write(yaml.dump(config_content, Dumper=yaml.SafeDumper))
