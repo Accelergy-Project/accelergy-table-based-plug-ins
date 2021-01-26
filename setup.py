@@ -20,7 +20,7 @@ def generate_data_files():
                 all_files[relative_root].append(relative_root + os.sep + file_name)
 
     data_files = []
-    share_root = 'share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins/'
+    share_root = 'share/accelergy/estimation_plug_ins/accelergy-table-based-plug-ins'
     for relative_root, list_of_files in all_files.items():
         root = share_root + relative_root
         subfolder_tuple = (root, list_of_files)
