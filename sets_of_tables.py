@@ -24,6 +24,7 @@ from accelergy.plug_in_interface.interface import *
 
 class SetsOfTables(AccelergyPlugIn):
     def __init__(self):
+        super().__init__() # Initializes our logger
         self.estimator_name = 'table-based-plug-ins'
 
         self.sets_of_tables = self.summarize_sets_of_tables()
@@ -191,7 +192,7 @@ class SetsOfTables(AccelergyPlugIn):
         accelergy_config_file = os.path.join(os.path.expanduser('~'),'.config/accelergy/accelergy_config.yaml')
         config_file_content = yaml.load(open(accelergy_config_file), Loader=yaml.SafeLoader)
         if 'table_plug_ins' not in config_file_content:
-            self.logger.error('cannot find the listed roots for the sets of tables')
+            self.logger.error('Cannot find the listed roots for the sets of tables')
             self.logger.error('Please initialize by running: accelergyTables')
             self.logger.error('A pointer to the default set of tables will be created in ~/.config/accelergy/accelergy_config.yaml')
         table_roots = config_file_content['table_plug_ins']['roots']
@@ -226,5 +227,5 @@ class SetsOfTables(AccelergyPlugIn):
                         identifier['supported_primitive_classes'] = supported_primitive_classes
                         set_name in sets_of_tables_info and self.logger.warn(f'Repeated table set name: {set_name}')
                         sets_of_tables_info[set_name] = identifier
-                        self.logger.info(f'Identifies a set of tables named: {set_name}')
+                        self.logger.info(f'Identified a set of tables named: {set_name}')
         return sets_of_tables_info
