@@ -19,43 +19,65 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 import os, yaml, sys, csv
-class SetsOfTables(object):
+from accelergy.plug_in_interface.interface import *
+
+class SetsOfTables(AccelergyPlugIn):
     def __init__(self):
         self.estimator_name = 'table-based-plug-ins'
+
         self.sets_of_tables = self.summarize_sets_of_tables()
         self.holder = [] # holds the results retrieved by primitive_action_supported/primitive_area_supported
-    
+
+    def get_name(self) -> str:
+        return self.estimator_name
+
     # 
     # ERT interface functions 
     #
         # (1) primitive_action_supported(interface)
         # (2) estimate_energy(interface)
 
-    def primitive_action_supported(self, interface):
+    def primitive_action_supported(self, query: AccelergyQuery) -> AccuracyEstimation:
+        class_name = query.class_name
+        attributes = query.class_attrs
+        action_name = query.action_name
+        arguments = query.action_args
+        # Legacy interface dictionary has keys class_name, attributes, action_name, and arguments
+        interface = query.to_legacy_interface_dict()
+
         technology = interface['attributes']['technology'] \
                      if 'technology' in interface['attributes'] else None
         if technology is None:
-            print(self.estimator_name, ': ',
-                  '"technology" attribute needs to be provided to locate the correct set of tables')
-            return 0
+            raise Exception(
+                f'"{self.estimator_name}" requires "technology" attribute to locate '
+                f'the correct set of tables')
+            # print(self.estimator_name, ': ',
+            #       '"technology" attribute needs to be provided to locate the correct set of tables')
+            # return 0
         max_accuracy, estimated_energy = self.select_best_set(interface)
         # record the retrieved result to avoid potential repetitive search
         if max_accuracy:
             self.holder = [] # reset energy holder
             self.holder.append(interface)
             self.holder.append(estimated_energy)
-        return max_accuracy
+            assert False
+        return AccuracyEstimation(max_accuracy)
 
-    def estimate_energy(self, interface):
+    def estimate_energy(self, query: AccelergyQuery) -> Estimation:
+        class_name = query.class_name
+        attributes = query.class_attrs
+        action_name = query.action_name
+        arguments = query.action_args
+        # Legacy interface dictionary has keys class_name, attributes, action_name, and arguments
+        interface = query.to_legacy_interface_dict()
+
         if len(self.holder) == 0 or not self.holder[0] == interface:
-            print(self.estimator_name, ': ERROR -- There is no energy held in energy holder or held energy incorrect')
-            print('Received Request: ', interface)
-            print('Energy Holder Data: ', self.holder)
-            sys.exit(0)
-        else:
-            return self.holder[1]
+            self.logger.error('There is no energy held in energy holder or held energy incorrect')
+            self.logger.error(f'Received Request: {interface}')
+            self.logger.error(f'Energy Holder Data: {self.holder}')
+            assert False
+        return Estimation(self.holder[1], 'p') # units are pJ
 
     # 
     # ART interface functions 
@@ -63,29 +85,45 @@ class SetsOfTables(object):
         # (1) primitive_area_supported(interface)
         # (2) estimate_area(interface)
 
-    def primitive_area_supported(self, interface):
+    def primitive_area_supported(self, query: AccelergyQuery) -> AccuracyEstimation:
+        class_name = query.class_name
+        attributes = query.class_attrs
+        action_name = query.action_name
+        arguments = query.action_args
+        # Legacy interface dictionary has keys class_name, attributes, action_name, and arguments
+        interface = query.to_legacy_interface_dict()
+
         technology = interface['attributes']['technology'] \
                      if 'technology' in interface['attributes'] else None
         if technology is None:
-            print(self.estimator_name, ': ',
-                  '"technology" attribute needs to be provided to locate the correct set of tables')
-            return 0
+            raise Exception(
+                f'"{self.estimator_name}" requires "technology" attribute to locate '
+                f'the correct set of tables')
+            # print(self.estimator_name, ': ',
+            #       '"technology" attribute needs to be provided to locate the correct set of tables')
+            # return 0
         max_accuracy, estimated_area = self.select_best_set(interface)
         # record the retrieved result to avoid potential repetitive search
         if max_accuracy:
             self.holder = [] # reset energy holder
             self.holder.append(interface)
             self.holder.append(estimated_area)
-        return max_accuracy
+        return AccuracyEstimation(max_accuracy)
 
-    def estimate_area(self, interface):
+    def estimate_area(self, query: AccelergyQuery) -> Estimation:
+        class_name = query.class_name
+        attributes = query.class_attrs
+        action_name = query.action_name
+        arguments = query.action_args
+        # Legacy interface dictionary has keys class_name, attributes, action_name, and arguments
+        interface = query.to_legacy_interface_dict()
+
         if len(self.holder) == 0 or not self.holder[0] == interface:
-            print(self.estimator_name, ': ERROR -- There is no energy held in energy holder or held energy incorrect')
-            print('Received Request: ', interface)
-            print('Energy Holder Data: ', self.holder)
-            sys.exit(0)
-        else:
-            return self.holder[1]
+            self.logger.error('There is no energy held in energy holder or held energy incorrect')
+            self.logger.error(f'Received Request: {interface}')
+            self.logger.error(f'Area Holder Data: {self.holder}')
+            assert False
+        return Estimation(self.holder[1], 'u^2') # units are um^2
 
     # -------- Utility functions -------#
     def select_best_set(self, interface):
@@ -153,10 +191,9 @@ class SetsOfTables(object):
         accelergy_config_file = os.path.join(os.path.expanduser('~'),'.config/accelergy/accelergy_config.yaml')
         config_file_content = yaml.load(open(accelergy_config_file), Loader=yaml.SafeLoader)
         if 'table_plug_ins' not in config_file_content:
-            print(self.estimator_name, ': ERROR -- cannot find the listed roots for the sets of tables')
-            print('Please initialize by running: accelergyTables')
-            print('A pointer to the default set of tables will be created in ~/.config/accelergy/accelergy_config.yaml')
-            sys.exit(0)
+            self.logger.error('cannot find the listed roots for the sets of tables')
+            self.logger.error('Please initialize by running: accelergyTables')
+            self.logger.error('A pointer to the default set of tables will be created in ~/.config/accelergy/accelergy_config.yaml')
         table_roots = config_file_content['table_plug_ins']['roots']
 
         for table_root in table_roots:
@@ -170,18 +207,15 @@ class SetsOfTables(object):
                         # Check the required keys
                         if 'accuracy' not in identifier or 'technology' not in identifier \
                                 or 'name' not in identifier or 'path_to_data_dir' not in identifier:
-                            print('ERROR-- ', identifier_path,
+                            self.logger.error('ERROR-- ', identifier_path,
                                   'Identifier YAML file for each set of tables must contain the following keys: \n'
                                   '"name", "technology", "accuracy", "path_to_data_dir"')
-                            sys.exit(0)
 
                         if not os.path.isabs(identifier['path_to_data_dir']):
                             abs_path = os.path.abspath(os.path.join(os.path.join(root), identifier['path_to_data_dir']))
                             if not os.path.exists(abs_path):
-                                print('ERROR-- ', identifier_path,
-                                      'The sepcified data directory cannot be located...')
-                                print('Intepreted absolute path to the specified data directory: ', abs_path)
-                                sys.exit(0)
+                                self.logger.warn('The sepcified data directory cannot be located...')
+                                self.logger.warn(f'Intepreted absolute path to the specified data directory: {abs_path}')
                             identifier['path_to_data_dir'] = abs_path
 
                         supported_primitive_classes = []
@@ -190,9 +224,7 @@ class SetsOfTables(object):
                                 if '.csv' in data_filename:
                                     supported_primitive_classes.append(data_filename[0:-4])
                         identifier['supported_primitive_classes'] = supported_primitive_classes
-                        set_name in sets_of_tables_info and print(self.estimator_name, ':',
-                            ' WARN -- Repeated table set name:', set_name)
+                        set_name in sets_of_tables_info and self.logger.warn(f'Repeated table set name: {set_name}')
                         sets_of_tables_info[set_name] = identifier
-                        print(self.estimator_name, 'Identifies a set of tables named: ',set_name )
-
+                        self.logger.info(f'Identifies a set of tables named: {set_name}')
         return sets_of_tables_info
