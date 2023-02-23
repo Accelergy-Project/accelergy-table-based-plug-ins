@@ -25,13 +25,12 @@ from accelergy.plug_in_interface.interface import *
 class SetsOfTables(AccelergyPlugIn):
     def __init__(self):
         super().__init__() # Initializes our logger
-        self.estimator_name = 'table-based-plug-ins'
 
         self.sets_of_tables = self.summarize_sets_of_tables()
         self.holder = [] # holds the results retrieved by primitive_action_supported/primitive_area_supported
 
     def get_name(self) -> str:
-        return self.estimator_name
+        return 'table-based-plug-ins'
 
     # 
     # ERT interface functions 
