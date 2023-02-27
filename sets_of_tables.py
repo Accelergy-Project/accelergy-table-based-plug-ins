@@ -50,7 +50,7 @@ class SetsOfTables(AccelergyPlugIn):
                      if 'technology' in interface['attributes'] else None
         if technology is None:
             raise Exception(
-                f'"{self.estimator_name}" requires "technology" attribute to locate '
+                f'"{self.get_name()}" requires "technology" attribute to locate '
                 f'the correct set of tables')
             # print(self.estimator_name, ': ',
             #       '"technology" attribute needs to be provided to locate the correct set of tables')
@@ -97,7 +97,7 @@ class SetsOfTables(AccelergyPlugIn):
                      if 'technology' in interface['attributes'] else None
         if technology is None:
             raise Exception(
-                f'"{self.estimator_name}" requires "technology" attribute to locate '
+                f'"{self.get_name()}" requires "technology" attribute to locate '
                 f'the correct set of tables')
             # print(self.estimator_name, ': ',
             #       '"technology" attribute needs to be provided to locate the correct set of tables')
