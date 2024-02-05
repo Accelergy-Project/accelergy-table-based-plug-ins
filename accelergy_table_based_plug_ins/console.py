@@ -12,6 +12,8 @@ def main():
     new_root = args.root
     accelergy_config_file_path = os.path.join(os.path.expanduser('~'),'.config/accelergy/accelergy_config.yaml')
     if not os.path.exists(accelergy_config_file_path):
+        os.system('accelergy')
+    if not os.path.exists(accelergy_config_file_path):
         print('ERROR: Cannot find exisiting accelergy config file at: ', accelergy_config_file_path)
         print('Please make sure Accelergy is properly installed and at least ran once')
         sys.exit(0)
