@@ -61,7 +61,6 @@ class SetsOfTables(AccelergyPlugIn):
             self.holder = [] # reset energy holder
             self.holder.append(interface)
             self.holder.append(estimated_energy)
-            assert False
         return AccuracyEstimation(max_accuracy)
 
     def estimate_energy(self, query: AccelergyQuery) -> Estimation:
@@ -76,7 +75,6 @@ class SetsOfTables(AccelergyPlugIn):
             self.logger.error('There is no energy held in energy holder or held energy incorrect')
             self.logger.error(f'Received Request: {interface}')
             self.logger.error(f'Energy Holder Data: {self.holder}')
-            assert False
         return Estimation(self.holder[1], 'p') # units are pJ
 
     # 
@@ -122,7 +120,6 @@ class SetsOfTables(AccelergyPlugIn):
             self.logger.error('There is no energy held in energy holder or held energy incorrect')
             self.logger.error(f'Received Request: {interface}')
             self.logger.error(f'Area Holder Data: {self.holder}')
-            assert False
         return Estimation(self.holder[1], 'u^2') # units are um^2
 
     # -------- Utility functions -------#
