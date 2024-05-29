@@ -1,3 +1,7 @@
+# Deprecation Warning
+This plug-in is deprecated. Please use the [Accelergy Library Plug-In](https://github.com/Accelergy-Project/accelergy-library-plug-in).
+
+
 # accelergy-table-based-plug-ins
 
 An energy estimation plug-in for [Accelergy framework](https://github.com/nelliewu96/accelergy). This plug-in provides an entry point for easy creation of various energy tables.
